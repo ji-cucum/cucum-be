@@ -1,24 +1,15 @@
 const express = require('express')
 const bodyParser = require('body-parser');
 require('dotenv').config();
-const { Pool } = require('pg');
 const app = express()
 app.use(bodyParser.json());
 const port = 3000
 
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-});
 console.log(process.env.DB_PASSWORD)
 app.get('/', (req, res) => {
     res.send('Hello World!')
     }
 )
-
 
 app.get('/data', async (req, res) => {
   try {
@@ -35,3 +26,21 @@ app.get('/data', async (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
+/*
+/myapp
+  /node_modules
+  /public
+    /stylesheets
+    /javascripts
+    /images
+  /routes
+    /api
+      index.js
+      users.js
+  /models
+    user.js
+  /controllers
+    userController.js
+  app.js
+  package.json
+*/
