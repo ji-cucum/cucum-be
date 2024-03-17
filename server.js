@@ -1,15 +1,30 @@
 const express = require('express')
 const bodyParser = require('body-parser');
 require('dotenv').config();
+const pool = require('./db');
 const app = express()
 app.use(bodyParser.json());
 const port = 3000
 
 console.log(process.env.DB_PASSWORD)
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.render('index');
     }
-)
+);
+
+app.set("view engine" , "ejs");
+
+app.get("/users/register", (req,res) => {
+  res.render("register");
+});
+
+app.get("/users/login", (req,res) => {
+  res.render("login");
+});
+
+app.get("/users/dashboard", (req,res) => {
+  res.render("dashboard", { user:"Conor"});
+});
 
 app.get('/data', async (req, res) => {
   try {
