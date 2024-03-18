@@ -8,6 +8,16 @@
 <body>
   <h1>Login</h1>
 
+  <% if(messages.success_msg) { %>
+    <li><%= messages.success_msg %></li>
+    <% } %>
+
+    <ul>
+      <% if(messages.error){ %>
+      <li><%= messages.error %></li>
+      <% } %>
+    </ul>
+
   <form action="/users/login" method="POST">
     <div>
       <input 
