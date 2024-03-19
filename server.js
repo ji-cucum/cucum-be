@@ -9,6 +9,7 @@ const bcrypt = require("bcrypt");
 const session = require("express-session");
 const flash = require("express-flash");
 const passport = require("passport");
+require("./auth")
 
 const initializePassport = require('./passportConfig')
 
@@ -36,6 +37,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(flash());
+
+app.use("/auth", require("./routes/authRouter"));
 
 app.get("/users/register", checkAuthenticated, (req,res) => {
   res.render("register");
@@ -70,14 +73,17 @@ app.post("/users/register", async (req,res) => {
 
   let errors = [];
 
+  //新規加入に必要な情報が入っていない場合
   if (!name || !email || !password || !password2){
     errors.push({ massage: "Please enter all fields" });
   }
 
+    //新規加入パスワードの長さを６文字以上にする
   if(password.length < 6){
     errors.push({ message: "Password should be at least 6 characters" });
   }
 
+    //新規加入パスワードとパスワード確認用を確認する
   if(password !== password2){
     errors.push({ message: "Password do not match" });
   }
@@ -86,7 +92,6 @@ app.post("/users/register", async (req,res) => {
     res.render("register", { errors });
   }else{
     //入力情報がフォーム様式にしたかったことを確認した後
-
     let hashedPassword = await bcrypt.hash(password, 10);
     console.log(hashedPassword);
 
@@ -172,7 +177,7 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 /*
-/myapp
+/myapp 
   /node_modules
   /public
     /stylesheets

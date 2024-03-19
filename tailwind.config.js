@@ -1,10 +1,14 @@
-module.exports = {
-  // 템플릿 파일의 경로 설정 👀
-  content: [
-    "./views.{ejs}",
-  ],
+/** @type {import('tailwindcss').Config} */
+export default {
+  purge: ['./view/*.{ejs}'],
+  darkMode: 'class',
   theme: {
     extend: {},
+  },
+  variants: {
+    extend: {
+      display: ['group-hover']
+    },
   },
   plugins: [],
 }
