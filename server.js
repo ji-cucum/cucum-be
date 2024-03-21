@@ -1,19 +1,20 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-require("dotenv").config();
-const app = express();
-app.use(bodyParser.json());
-const port = 3000;
-const pool = require("./db");
-const bcrypt = require("bcrypt");
-const session = require("express-session");
-const flash = require("express-flash");
-const passport = require("passport");
-require("./auth")
+
 import playlistRouter from './routes/playlistRouter.js';
 import cors from 'cors';
+import express from 'express';
+import bodyParser from 'body-parser';
+import bcrypt from "bcrypt";
+import passport from "passport";
+import dotenv from "dotenv";
+
+dotenv.config();
+import pool from "./db.js";
+// import "./auth.js"
+
 const app = express()
 const port = 3011
+
+app.use(bodyParser.json());
 
 app.use(bodyParser.json());
 app.options("*", cors({ origin: 'http://localhost:5173', optionsSuccessStatus: 200 }));
@@ -166,3 +167,4 @@ function checkNotAuthenticated(req, res, next) {
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
+})
