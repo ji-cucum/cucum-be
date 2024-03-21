@@ -1,47 +1,24 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-require("dotenv").config();
-const app = express();
-app.use(bodyParser.json());
-const port = 3000;
-const pool = require("./db");
-const bcrypt = require("bcrypt");
-const session = require("express-session");
-const flash = require("express-flash");
-const passport = require("passport");
-require("./auth")
+
 import playlistRouter from './routes/playlistRouter.js';
+import cors from 'cors';
+import express from 'express';
+import bodyParser from 'body-parser';
+import bcrypt from "bcrypt";
+import passport from "passport";
+import dotenv from "dotenv";
 
-const initializePassport = require("./passportConfig");
+dotenv.config();
+import pool from "./db.js";
+// import "./auth.js"
 
-initializePassport(passport);
-
-console.log(process.env.DB_PASSWORD);
-app.get("/", (req, res) => {
-  res.render("index");
-});
-
-app.set("view engine", "ejs");
-app.use(express.urlencoded({ extended: false }));
-
-app.use(
-  session({
-    secret: "secret",
-
-    resave: false,
-
-    saveUninitialized: false,
-  })
-);
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use(flash());
-
-app.use("/auth", require("./routes/authRouter"));
+const app = express()
+const port = 3011
 
 app.use(bodyParser.json());
+
+app.use(bodyParser.json());
+app.options("*", cors({ origin: 'http://localhost:5173', optionsSuccessStatus: 200 }));
+app.use(cors({ origin: "http://localhost:5173", optionsSuccessStatus: 200 }));
 app.use('/api/playlist', playlistRouter);
 
 app.get("/users/register_mailAdress", checkAuthenticated, (req, res) => {
