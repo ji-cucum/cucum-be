@@ -10,9 +10,7 @@ const session = require("express-session");
 const flash = require("express-flash");
 const passport = require("passport");
 require("./auth")
-
-app.use(bodyParser.json());
-app.use('/api/playlist', playlistRouter);
+import playlistRouter from './routes/playlistRouter.js';
 
 const initializePassport = require("./passportConfig");
 
@@ -42,6 +40,9 @@ app.use(passport.session());
 app.use(flash());
 
 app.use("/auth", require("./routes/authRouter"));
+
+app.use(bodyParser.json());
+app.use('/api/playlist', playlistRouter);
 
 app.get("/users/register_mailAdress", checkAuthenticated, (req, res) => {
   res.render("register_mailAdress");
