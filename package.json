@@ -3,7 +3,14 @@
     "@prisma/client": "5.11.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "ejs": "^3.1.9",
     "express": "^4.18.3",
+    "express-flash": "^0.0.2",
+    "express-session": "^1.18.0",
+    "passport": "^0.7.0",
+    "passport-google-oauth2": "^0.2.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-local": "^1.0.0",
     "pg": "^8.11.3"
   },
   "name": "cucum-be",
@@ -18,9 +25,12 @@
   "license": "ISC",
   "description": "",
   "type": "module",
+  "type": "module",
   "devDependencies": {
     "@types/pg": "^8.11.2",
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.23.0",
     "nodemon": "^3.1.0",
-    "prisma": "5.11.0"
+    "prisma": "5.11.0",
+    "tailwindcss": "^3.4.1"
   }
-}
