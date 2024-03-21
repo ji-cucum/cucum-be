@@ -1,7 +1,11 @@
-const passport = require("passport");
-const { Strategy: GoogleStrategy } = require("passport-google-oauth20");
-require("dotenv").config();
-const pool = require("./db");
+import passport from "passport";
+import pkg from "passport-google-oauth20";
+import dotenv from 'dotenv';
+import pool from "./db.js";
+const GoogleStrategy = pkg.Strategy;
+dotenv.config();
+
+console.log('id', process.env.CLIENT_ID);
 
 passport.use(
   new GoogleStrategy(
