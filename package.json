@@ -25,6 +25,7 @@
   "license": "ISC",
   "description": "",
   "type": "module",
+  "type": "module",
   "devDependencies": {
     "@types/pg": "^8.11.2",
     "eslint": "^8.57.0",

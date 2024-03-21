@@ -1,9 +1,18 @@
-const playlistController = require('../controllers/playlistController');
+import express from 'express';
+import {
+  getAllPlaylists,
+  getPlaylist,
+  createPlaylist,
+  updatePlaylist,
+  deletePlaylist
+} from '../controllers/playlistController.js';
 
-router.get('/', playlistController.getAllPlaylists);
-router.get('/:id', playlistController.getPlaylist);
-router.post('/', playlistController.createPlaylist);
-router.put('/:id', playlistController.updatePlaylist);
-router.delete('/:id', playlistController.deletePlaylist);
+const router = express.Router();
 
-module.exports = router;
+router.get('/', getAllPlaylists);
+router.get('/:id', getPlaylist);
+router.post('/', createPlaylist);
+router.put('/:id', updatePlaylist);
+router.delete('/:id', deletePlaylist);
+
+export default router;

@@ -11,6 +11,9 @@ const flash = require("express-flash");
 const passport = require("passport");
 require("./auth")
 
+app.use(bodyParser.json());
+app.use('/api/playlist', playlistRouter);
+
 const initializePassport = require("./passportConfig");
 
 initializePassport(passport);
@@ -185,23 +188,5 @@ function checkNotAuthenticated(req, res, next) {
 }
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
-/*
-/myapp 
-  /node_modules
-  /public
-    /stylesheets
-    /javascripts
-    /images
-  /routes
-    /api
-      index.js
-      users.js
-  /models
-    user.js
-  /controllers
-    userController.js
-  app.js
-  package.json
-*/
+  console.log(`Example app listening on port ${port}`)
+})
