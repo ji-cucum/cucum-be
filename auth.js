@@ -15,17 +15,17 @@ passport.use(
       let user = {};
       try {
         const currentUserQuery = await pool.query(
-          "SELECT * FROM ji_project.users WHERE email = $1 ",
+          "SELECT * FROM ji_project.users WHERE googlesub = $1 ",
           [account.sub]
         );
         if (currentUserQuery.rows.length === 0) {
           //ユーザー作成
           await pool.query(
-            "INSERT INTO ji_project.users (name, email) VALUES ($1,$2)",
+            "INSERT INTO ji_project.users (name, googlesub) VALUES ($1,$2)",
             [account.name, account.sub]
           );
           const id = await pool.query(
-            "SELECT id FROM ji_project.users WHERE google_id=$1",
+            "SELECT id FROM ji_project.users WHERE googlesub=$1",
             [account.sub]
           );
           user = {

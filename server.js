@@ -40,8 +40,12 @@ app.use(flash());
 
 app.use("/auth", require("./routes/authRouter"));
 
-app.get("/users/register", checkAuthenticated, (req, res) => {
-  res.render("register");
+app.get("/users/register_mailAdress", checkAuthenticated, (req, res) => {
+  res.render("register_mailAdress");
+});
+
+app.get("/users/register_googleAccount", checkAuthenticated, (req, res) => {
+  res.render("register_googleAccount");
 });
 
 app.get("/users/login", checkAuthenticated, (req, res) => {
@@ -62,7 +66,11 @@ app.get("/users/logout", (req, res) => {
   });
 });
 
-app.post("/users/register", async (req, res) => {
+app.post("/users/register_googleAccount", (req, res)=>{
+  res.redirect('/auth/google');
+})
+
+app.post("/users/register_mailAdress", async (req, res) => {
   let { name, email, password, password2 } = req.body;
   console.log({
     name,
@@ -89,7 +97,7 @@ app.post("/users/register", async (req, res) => {
   }
 
   if (errors.length > 0) {
-    res.render("register", { errors });
+    res.render("register_mailAdress", { errors });
   } else {
     //入力情報がフォーム様式にしたかったことを確認した後
     let hashedPassword = await bcrypt.hash(password, 10);
@@ -107,7 +115,7 @@ app.post("/users/register", async (req, res) => {
 
         if (results.rows.length > 0) {
           errors.push({ message: "Email already registered" });
-          res.render("register", { errors });
+          res.render("register_mailAderss", { errors });
         } else {
           pool.query(
             `INSERT INTO ji_project.users (name, email, password)
