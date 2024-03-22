@@ -1,4 +1,3 @@
-
 import playlistRouter from './routes/playlistRouter.js';
 import cors from 'cors';
 import express from 'express';
@@ -6,19 +5,48 @@ import bodyParser from 'body-parser';
 import bcrypt from "bcrypt";
 import passport from "passport";
 import dotenv from "dotenv";
+import session from 'express-session';
+import flash from 'express-flash';
+import initializePassport from './passportConfig.js'
+import authRouter from './routes/authRouter.js'
 
 dotenv.config();
 import pool from "./db.js";
-// import "./auth.js"
+import "./auth.js"
 
 const app = express()
 const port = 3011
 
 app.use(bodyParser.json());
-
-app.use(bodyParser.json());
 app.options("*", cors({ origin: 'http://localhost:5173', optionsSuccessStatus: 200 }));
 app.use(cors({ origin: "http://localhost:5173", optionsSuccessStatus: 200 }));
+
+initializePassport(passport);
+
+app.get("/",(req,res) => {
+  res.render("index");
+});
+
+app.set("view engine", "ejs");
+app.use(express.urlencoded({extended: false}));
+
+app.use(
+  session({
+    secret: "secret",
+
+    resave: false,
+
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(flash());
+
+app.use("/auth", authRouter);
+
 app.use('/api/playlist', playlistRouter);
 
 app.get("/users/register_mailAdress", checkAuthenticated, (req, res) => {
