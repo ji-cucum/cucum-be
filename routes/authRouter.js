@@ -1,6 +1,7 @@
-const express = require("express");
+import express from "express";
+import passport from "passport"
+
 const router = express.Router();
-const passport = require("passport")
 
 //googleアカウントでログイン
 router.get(
@@ -19,4 +20,4 @@ router.get(
   }), 
 );
 
-module.exports = router;
+export default router;
