@@ -1,4 +1,5 @@
 import playlistRouter from './routes/playlistRouter.js';
+import imageRouter from './routes/imageRouter.js';
 import cors from 'cors';
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -48,6 +49,7 @@ app.use(flash());
 app.use("/auth", authRouter);
 
 app.use('/api/playlist', playlistRouter);
+app.use('/api/image', imageRouter);
 
 app.get("/users/register_mailAdress", checkAuthenticated, (req, res) => {
   res.render("register_mailAdress");

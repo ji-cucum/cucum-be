@@ -1,0 +1,11 @@
+### upload
+
+POST http://localhost:3011/api/image
+Content-Type: multipart/form-data; boundary=MyBoundary
+
+--MyBoundary
+Content-Disposition: form-data; name="file"; filename="LINE_ALBUM_230805_0.jpg"
+Content-Type: image/jpeg
+
+< ./LINE_ALBUM_230805_0.jpg
+--MyBoundary--
