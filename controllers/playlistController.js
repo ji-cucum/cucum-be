@@ -4,8 +4,23 @@ const prisma = new PrismaClient();
  
 export const getAllPlaylists = async (req, res) => {
   try {
-    const playlists = await prisma.playlist.findMany();
-    res.send(JSON.stringify(playlists, bigIntToString));
+
+    const { sort, order, offset, limit } = req.body;
+    const params = {
+        orderBy: {
+          [sort]: order,
+        },
+        skip: offset,
+        take: limit,
+      } 
+    const [ playlists, playlistCount ] = await Promise.all([
+      prisma.playlist.findMany(params),
+      prisma.playlist.count(),
+    ]);
+    res.send({ 
+      items: JSON.parse(JSON.stringify(playlists, bigIntToString)), 
+      meta: { total: playlistCount }
+    });
   } catch (err) {
     console.error(err);
     res.send("Error " + err);

@@ -9,7 +9,7 @@ import {
 
 const router = express.Router();
 
-router.get('/', getAllPlaylists);
+router.post('/', getAllPlaylists);
 router.get('/:id', getPlaylist);
 router.post('/', createPlaylist);
 router.put('/:id', updatePlaylist);
