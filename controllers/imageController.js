@@ -15,7 +15,6 @@ export const createImage = async (req, res) => {
     try {
         const file = req.file;
 
-        console.log(file)
         const image = {
             origin_name: file.originalname,
             file_name: uuidv4(),
@@ -23,7 +22,6 @@ export const createImage = async (req, res) => {
             created_by: "cucum",
         }
 
-        console.log(image);
         try {
             // upload
             await sftp.connect({
@@ -33,6 +31,7 @@ export const createImage = async (req, res) => {
                 password: process.env.SFTP_PASSWORD
             })
             await sftp.put(file.path, `/image-uploader/uploads/${image.file_name}${image.file_extension}`);
+
             // db
             await prisma.image.create({
                 data: image,
