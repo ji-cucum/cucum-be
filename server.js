@@ -90,11 +90,12 @@ app.post("/api/register-mailAdress", async (req, res) => {
     password,
     password_confirm,
   });
-
+  
   let errors = [];
 
   if (errors.length > 0) {
-    res.render("register-mailAdress", { errors });
+    return res.status(500).json({ errors });
+ 
   } else {
     //入力情報がフォーム様式にしたかったことを確認した後
     let hashedPassword = await bcrypt.hash(password, 10);
@@ -111,8 +112,9 @@ app.post("/api/register-mailAdress", async (req, res) => {
         console.log(results.rows);
 
         if (results.rows.length > 0) {
-          errors.push({ message: "Email already registered" });
-          res.render("register_mailAdress", { errors });
+          errors.push({ message: "登録済みのメールアドレスです" });
+          return res.status(500).json({ errors });
+
         } else {
           pool.query(
             `INSERT INTO ji_project.users (name, email, password)
@@ -124,6 +126,7 @@ app.post("/api/register-mailAdress", async (req, res) => {
                 throw err;
               }
               console.log(results.rows);
+              res.status(200).send("User registered successfully");
             }
           );
         }
