@@ -1,7 +1,5 @@
 import playlistRouter from './routes/playlistRouter.js';
-import cors from 'cors';
 import express from 'express';
-import bodyParser from 'body-parser';
 import cookieParser from "cookie-parser";
 import bcrypt from "bcrypt";
 import passport from "passport";
@@ -10,7 +8,6 @@ import session from 'express-session';
 import flash from 'express-flash';
 import initializePassport from './passportConfig.js'
 import authRouter from './routes/authRouter.js'
-import jwt from 'jsonwebtoken';
 
 dotenv.config();
 import pool from "./db.js";
@@ -20,36 +17,18 @@ const app = express()
 const port = 3011
 
 app.use(cookieParser())
-app.use(bodyParser.json());
-// app.options("*", cors({ origin: 'http://localhost:5173', optionsSuccessStatus: 200 }));
-// app.use(cors({ origin: "http://localhost:5173", optionsSuccessStatus: 200 }));
+app.use(express.json());
 
 initializePassport(passport);
 
-app.get("/",(req,res) => {
-  res.render("index");
-});
-
-app.set("view engine", "ejs");
 app.use(express.urlencoded({extended: false}));
 
-app.use([
+app.use(
   session({
-    name:"excid",
     secret: "secret",
     resave: false,
     saveUninitialized: false,
-    cookie:{
-      secure: false,
-      httpOnly: true,
-      sameSite: 'none'
-    }
-  }),
-  function(req, res, next){
-    console.log("call after express session", res.getHeaders())
-    next()
-  }
-  ]
+  })
 );
 
 app.use(passport.initialize());
@@ -57,27 +36,14 @@ app.use(passport.session());
 
 app.use(flash());
 
-app.use(authRouter);
-
 app.use("/api/*", checkAuthenticated);
-app.use("/api/without-session/*",checkNotAuthenticated);
+
+app.use(authRouter);
 
 app.use('/api/playlist', playlistRouter);
 
 app.get("/api/register-mailAdress", (req, res) => {
   res.send(401);
-});
-
-app.get("/api/register-googleAccount", checkAuthenticated, (req, res) => {
-  res.render("register-googleAccount");
-});
-
-app.get("/api/login-mailAdress", checkAuthenticated, (req, res) => {
-  res.render("login-mailAdress");
-});
-
-app.get("/dashboard", checkNotAuthenticated, (req, res) => {
-  res.render("dashboard", { user: req.user.name });
 });
 
 app.get("/api/logout", (req, res) => {
@@ -148,20 +114,22 @@ app.post("/api/register-mailAdress", async (req, res) => {
 });
 
 app.post("/api/login-mailAdress", (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) {
-      return next(err);
-    }
-    console.log(user)
-    if (!user) {
-      // 失敗時のメッサージ.
-      return res.status(501).json({ message: "ログイン情報に誤りがあります" });
-    }
-    // const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET);
-    // 로그인 성공 시 클라이언트에게 성공을 알리는 응답을 보냅니다.
-    return res.status(200).json({ message: "로그인 성공"});
-  })(req, res, next);
-});
+  req.login(null, ()=>{
+    passport.authenticate("local", (err, user, info) => {
+      if (err) {
+        return next(err);
+      }
+      console.log(user)
+      if (!user) {
+        // 失敗時のメッサージ.
+        return res.status(501).json({ message: "ログイン情報に誤りがあります" });
+      }
+      // const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET);
+      // 로그인 성공 시 클라이언트에게 성공을 알리는 응답을 보냅니다.
+      return res.status(200).json({ message: "로그인 성공"});
+    })(req, res, next);
+  });
+})
 
 app.get("/data", async (req, res) => {
   try {
@@ -190,18 +158,9 @@ app.get("/users", async (req, res) => {
 });
 
 function checkAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return res.redirect("/users/dashboard");
-  }
   next();
 }
 
-function checkNotAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.redirect("/users/login-mailAdress");
-}
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

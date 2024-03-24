@@ -25,7 +25,7 @@ router.get(
 
 //ログインしなくても接続できるAPI /without-login-api/
 router.get(
-  "/api/without-auth/is-logged-in",
+  "/public-api/is-logged-in",
   function(req, res){
     const loggedIn = req.isAuthenticated()
     res.json({
