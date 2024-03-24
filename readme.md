@@ -8,3 +8,10 @@ model Playlist {
 
 
 npx prisma generate
+
+
+# Sessionがないと使えないAPI
+/api/*
+
+# Sessionがなくても使えるAPI
+/api/without-session/*

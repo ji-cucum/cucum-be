@@ -45,68 +45,56 @@ app.use(passport.session());
 
 app.use(flash());
 
-app.use("/auth", authRouter);
+app.use(authRouter);
+
+app.use("/api/*", checkAuthenticated);
+app.use("/api/without-session/*",checkNotAuthenticated);
 
 app.use('/api/playlist', playlistRouter);
 
-app.get("/users/register_mailAdress", checkAuthenticated, (req, res) => {
-  res.render("register_mailAdress");
+app.get("/api/register-mailAdress", (req, res) => {
+  res.send(401);
 });
 
-app.get("/users/register_googleAccount", checkAuthenticated, (req, res) => {
-  res.render("register_googleAccount");
+app.get("/api/register-googleAccount", checkAuthenticated, (req, res) => {
+  res.render("register-googleAccount");
 });
 
-app.get("/users/login", checkAuthenticated, (req, res) => {
-  res.render("login");
+app.get("/api/login-mailAdress", checkAuthenticated, (req, res) => {
+  res.render("login-mailAdress");
 });
 
-app.get("/users/dashboard", checkNotAuthenticated, (req, res) => {
+app.get("/dashboard", checkNotAuthenticated, (req, res) => {
   res.render("dashboard", { user: req.user.name });
 });
 
-app.get("/users/logout", (req, res) => {
+app.get("/api/logout", (req, res) => {
   req.logout(function (err) {
     if (err) {
       return next(err);
     }
     req.flash("success_msg", "You have logged out");
-    res.redirect("/users/login");
+    res.redirect("/api/login_mailAdress");
   });
 });
 
-app.post("/users/register_googleAccount", (req, res)=>{
+app.post("/api/register-googleAccount", (req, res)=>{
   res.redirect('/auth/google');
 })
 
-app.post("/users/register_mailAdress", async (req, res) => {
-  let { name, email, password, password2 } = req.body;
+app.post("/api/register-mailAdress", async (req, res) => {
+  let { name, email, password, password_confirm } = req.body;
   console.log({
     name,
     email,
     password,
-    password2,
+    password_confirm,
   });
 
   let errors = [];
 
-  //新規加入に必要な情報が入っていない場合
-  if (!name || !email || !password || !password2) {
-    errors.push({ massage: "Please enter all fields" });
-  }
-
-  //新規加入パスワードの長さを６文字以上にする
-  if (password.length < 6) {
-    errors.push({ message: "Password should be at least 6 characters" });
-  }
-
-  //新規加入パスワードとパスワード確認用を確認する
-  if (password !== password2) {
-    errors.push({ message: "Password do not match" });
-  }
-
   if (errors.length > 0) {
-    res.render("register_mailAdress", { errors });
+    res.render("register-mailAdress", { errors });
   } else {
     //入力情報がフォーム様式にしたかったことを確認した後
     let hashedPassword = await bcrypt.hash(password, 10);
@@ -124,7 +112,7 @@ app.post("/users/register_mailAdress", async (req, res) => {
 
         if (results.rows.length > 0) {
           errors.push({ message: "Email already registered" });
-          res.render("register_mailAderss", { errors });
+          res.render("register_mailAdress", { errors });
         } else {
           pool.query(
             `INSERT INTO ji_project.users (name, email, password)
@@ -136,8 +124,6 @@ app.post("/users/register_mailAdress", async (req, res) => {
                 throw err;
               }
               console.log(results.rows);
-              req.flash("success_msg", "You are now registered. Please log in");
-              res.redirect("/users/login");
             }
           );
         }
@@ -147,10 +133,10 @@ app.post("/users/register_mailAdress", async (req, res) => {
 });
 
 app.post(
-  "/users/login",
+  "/api/login-mailAdress",
   passport.authenticate("local", {
     successRedirect: "/users/dashboard",
-    failureRedirect: "/users/login",
+    failureRedirect: "/users/login-mailAdress",
     failureFlash: true,
   })
 );
@@ -190,7 +176,7 @@ function checkNotAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect("/users/login");
+  res.redirect("/users/login-mailAdress");
 }
 
 app.listen(port, () => {
