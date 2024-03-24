@@ -2,6 +2,7 @@ import playlistRouter from './routes/playlistRouter.js';
 import cors from 'cors';
 import express from 'express';
 import bodyParser from 'body-parser';
+import cookieParser from "cookie-parser";
 import bcrypt from "bcrypt";
 import passport from "passport";
 import dotenv from "dotenv";
@@ -18,6 +19,7 @@ import "./auth.js"
 const app = express()
 const port = 3011
 
+app.use(cookieParser())
 app.use(bodyParser.json());
 // app.options("*", cors({ origin: 'http://localhost:5173', optionsSuccessStatus: 200 }));
 // app.use(cors({ origin: "http://localhost:5173", optionsSuccessStatus: 200 }));
@@ -31,19 +33,23 @@ app.get("/",(req,res) => {
 app.set("view engine", "ejs");
 app.use(express.urlencoded({extended: false}));
 
-app.use(
+app.use([
   session({
-    cookie:{
-      maxAge: 60 * 60 * 24 * 7,
-      secure: false,
-      sameSite: 'strict',
-      httpOnly: true,
-      path: "/"
-    },
+    name:"excid",
     secret: "secret",
     resave: false,
     saveUninitialized: false,
-  })
+    cookie:{
+      secure: false,
+      httpOnly: true,
+      sameSite: 'none'
+    }
+  }),
+  function(req, res, next){
+    console.log("call after express session", res.getHeaders())
+    next()
+  }
+  ]
 );
 
 app.use(passport.initialize());
@@ -146,6 +152,7 @@ app.post("/api/login-mailAdress", (req, res, next) => {
     if (err) {
       return next(err);
     }
+    console.log(user)
     if (!user) {
       // 失敗時のメッサージ.
       return res.status(501).json({ message: "ログイン情報に誤りがあります" });
