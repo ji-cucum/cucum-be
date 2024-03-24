@@ -9,6 +9,7 @@ import session from 'express-session';
 import flash from 'express-flash';
 import initializePassport from './passportConfig.js'
 import authRouter from './routes/authRouter.js'
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
 import pool from "./db.js";
@@ -18,8 +19,8 @@ const app = express()
 const port = 3011
 
 app.use(bodyParser.json());
-app.options("*", cors({ origin: 'http://localhost:5173', optionsSuccessStatus: 200 }));
-app.use(cors({ origin: "http://localhost:5173", optionsSuccessStatus: 200 }));
+// app.options("*", cors({ origin: 'http://localhost:5173', optionsSuccessStatus: 200 }));
+// app.use(cors({ origin: "http://localhost:5173", optionsSuccessStatus: 200 }));
 
 initializePassport(passport);
 
@@ -32,10 +33,15 @@ app.use(express.urlencoded({extended: false}));
 
 app.use(
   session({
+    cookie:{
+      maxAge: 60 * 60 * 24 * 7,
+      secure: false,
+      sameSite: 'strict',
+      httpOnly: true,
+      path: "/"
+    },
     secret: "secret",
-
     resave: false,
-
     saveUninitialized: false,
   })
 );
@@ -135,14 +141,20 @@ app.post("/api/register-mailAdress", async (req, res) => {
   }
 });
 
-app.post(
-  "/api/login-mailAdress",
-  passport.authenticate("local", {
-    successRedirect: "/users/dashboard",
-    failureRedirect: "/users/login-mailAdress",
-    failureFlash: true,
-  })
-);
+app.post("/api/login-mailAdress", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      // 失敗時のメッサージ.
+      return res.status(501).json({ message: "ログイン情報に誤りがあります" });
+    }
+    // const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET);
+    // 로그인 성공 시 클라이언트에게 성공을 알리는 응답을 보냅니다.
+    return res.status(200).json({ message: "로그인 성공"});
+  })(req, res, next);
+});
 
 app.get("/data", async (req, res) => {
   try {
@@ -152,6 +164,8 @@ app.get("/data", async (req, res) => {
     client.release();
   } catch (err) {
     console.error(err);
+
+    
     res.send("Error " + err);
   }
 });

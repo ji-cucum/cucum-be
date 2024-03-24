@@ -27,15 +27,10 @@ router.get(
 router.get(
   "/api/without-auth/is-logged-in",
   function(req, res){
-    if (req.isAuthenticated()) {
-      res.json({
-        loggedIn: true
-      });
-    } else {
-      res.json({
-        loggedIn: false
-      });
-    }
+    const loggedIn = req.isAuthenticated()
+    res.json({
+      loggedIn
+    })
   }
 )
 
