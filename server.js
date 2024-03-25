@@ -20,7 +20,7 @@ const port = 3011
 
 app.use(bodyParser.json());
 app.options("*", cors({ origin: 'http://localhost:5173', optionsSuccessStatus: 200 }));
-app.use(cors({ origin: "http://localhost:5173", optionsSuccessStatus: 200 }));
+app.use(cors({ origin: "http://localhost:5173", optionsSuccessStatus: 200, credentials: true}));
 
 app.use(cookieParser())
 app.use(express.json());
@@ -120,7 +120,6 @@ app.post("/api/register-mailAdress", async (req, res) => {
 });
 
 app.post("/api/login-mailAdress", (req, res, next) => {
-  req.login(null, ()=>{
     passport.authenticate("local", (err, user, info) => {
       if (err) {
         return next(err);
@@ -132,9 +131,13 @@ app.post("/api/login-mailAdress", (req, res, next) => {
       }
       // const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET);
       // 로그인 성공 시 클라이언트에게 성공을 알리는 응답을 보냅니다.
-      return res.status(200).json({ message: "로그인 성공"});
+      req.login(user,(err) => {
+        if (err) {
+          return next(err);
+        }
+        return res.status(200).json({ message: "로그인 성공"});
+      })
     })(req, res, next);
-  });
 })
 
 app.get("/data", async (req, res) => {
