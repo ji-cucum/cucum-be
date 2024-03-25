@@ -8,6 +8,8 @@ import session from 'express-session';
 import flash from 'express-flash';
 import initializePassport from './passportConfig.js'
 import authRouter from './routes/authRouter.js'
+import bodyParser from 'body-parser';
+import cors from 'cors'
 
 dotenv.config();
 import pool from "./db.js";
@@ -15,6 +17,10 @@ import "./auth.js"
 
 const app = express()
 const port = 3011
+
+app.use(bodyParser.json());
+app.options("*", cors({ origin: 'http://localhost:5173', optionsSuccessStatus: 200 }));
+app.use(cors({ origin: "http://localhost:5173", optionsSuccessStatus: 200 }));
 
 app.use(cookieParser())
 app.use(express.json());
