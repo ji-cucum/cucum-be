@@ -47,6 +47,7 @@ app.use("/api/*", checkAuthenticated);
 app.use(authRouter);
 
 app.use('/api/playlist', playlistRouter);
+app.use('/api/image', imageRouter);
 
 app.get("/api/register-mailAdress", (req, res) => {
   res.send(401);

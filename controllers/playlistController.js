@@ -4,8 +4,23 @@ const prisma = new PrismaClient();
  
 export const getAllPlaylists = async (req, res) => {
   try {
-    const playlists = await prisma.playlist.findMany();
-    res.send(JSON.stringify(playlists, bigIntToString));
+
+    const { sort, order, offset, limit } = req.body;
+    const params = {
+        orderBy: {
+          [sort]: order,
+        },
+        skip: offset,
+        take: limit,
+      } 
+    const [ playlists, playlistCount ] = await Promise.all([
+      prisma.playlist.findMany(params),
+      prisma.playlist.count(),
+    ]);
+    res.send({ 
+      items: JSON.parse(JSON.stringify(playlists, bigIntToString)), 
+      meta: { total: playlistCount }
+    });
   } catch (err) {
     console.error(err);
     res.send("Error " + err);
@@ -18,7 +33,7 @@ export const getPlaylist = async (req, res) => {
     const playlist = await prisma.playlist.findUnique({
       where: { id: Number(id) },
     });
-    res.send(playlist);
+    res.send(JSON.stringify(playlist, bigIntToString));
   } catch (err) {
     console.error(err);
     res.send("Error " + err);
@@ -27,11 +42,10 @@ export const getPlaylist = async (req, res) => {
 
 export const createPlaylist = async (req, res) => {
   try {
-    const { title, description } = req.body;
     const newPlaylist = await prisma.playlist.create({
-      data: { title, description },
+      data: req.body,
     });
-    res.send(newPlaylist);
+    res.send(JSON.stringify(newPlaylist, bigIntToString));
   } catch (err) {
     console.error(err);
     res.send("Error " + err);
@@ -46,7 +60,7 @@ export const updatePlaylist = async (req, res) => {
       where: { id: Number(id) },
       data: { title, description },
     });
-    res.send(updatedPlaylist);
+    res.send(JSON.stringify(updatedPlaylist, bigIntToString));
   } catch (err) {
     console.error(err);
     res.send("Error " + err);
@@ -59,7 +73,7 @@ export const deletePlaylist = async (req, res) => {
     const deletedPlaylist = await prisma.playlist.delete({
       where: { id: Number(id) },
     });
-    res.send(deletedPlaylist);
+    res.send(JSON.stringify(deletedPlaylist, bigIntToString));
   } catch (err) {
     console.error(err);
     res.send("Error " + err);
