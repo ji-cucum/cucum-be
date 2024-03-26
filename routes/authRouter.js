@@ -22,10 +22,6 @@ router.get("/public-api/is-logged-in", function (req, res) {
   });
 });
 
-router.post("/api/register-googleAccount", (req, res) => {
-  res.redirect("/api/auth/google");
-});
-
 router.post("/api/register-mailAdress", async (req, res) => {
   let { name, email, password, password_confirm } = req.body;
   console.log({
@@ -107,31 +103,25 @@ router.post("/api/login-mailAdress", (req, res, next) => {
 //   }),
 // );
 
-router.get("/auth/google/callback", (req, res, next) => {
-  passport.authenticate("google", { session: true }, (err, user, info) => {
-    if (err) {
-      return next(err);
-    }
-    console.log(user);
-    if (!user) {
-      return res.status(401).json({ message: "Google認証に失敗しました. " });
-    }
-    req.login(user, (err) => {
-      if (err) {
-        return next(err);
-      }
-      return res.status(200).json({ message: "ログイン成功" });
-    });
-  })(req, res, next);
-});
+router.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+  })
+);
 
 router.get("/api/logout", (req, res) => {
   req.logout(function (err) {
     if (err) {
       return next(err);
     }
+    console.log('logout done')
     req.flash("success_msg", "You have logged out");
-    res.redirect("/api/login_mailAdress");
+    res.json({
+      success:true, 
+      message: 'complete logout.'
+    })
   });
 });
 
