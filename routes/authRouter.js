@@ -1,5 +1,7 @@
 import express from "express";
 import passport from "passport";
+import bcrypt from "bcrypt";
+import pool from "../db.js";
 
 const router = express.Router();
 
@@ -22,7 +24,7 @@ router.get("/public-api/is-logged-in", function (req, res) {
   });
 });
 
-router.post("/api/register-mailAdress", async (req, res) => {
+router.post("/api/register-mail-adress", async (req, res) => {
   let { name, email, password, password_confirm } = req.body;
   console.log({
     name,
