@@ -10,6 +10,7 @@ import initializePassport from './passportConfig.js'
 import authRouter from './routes/authRouter.js'
 import bodyParser from 'body-parser';
 import cors from 'cors'
+// import imageRouter from './routes/imageRouter.js'
 
 dotenv.config();
 import pool from "./db.js";
@@ -47,7 +48,7 @@ app.use("/api/*", checkAuthenticated);
 app.use(authRouter);
 
 app.use('/api/playlist', playlistRouter);
-app.use('/api/image', imageRouter);
+// app.use('/api/image', imageRouter);
 
 app.get("/api/register-mailAdress", (req, res) => {
   res.send(401);
