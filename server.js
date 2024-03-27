@@ -1,4 +1,7 @@
 import playlistRouter from './routes/playlistRouter.js';
+import musicRouter from './routes/musicRouter.js';
+import imageRouter from './routes/imageRouter.js';
+import cors from 'cors';
 import express from 'express';
 import cookieParser from "cookie-parser";
 import bcrypt from "bcrypt";
@@ -46,6 +49,7 @@ app.use("/api/*", checkAuthenticated);
 
 app.use(authRouter);
 
+app.use('/api/music', musicRouter);
 app.use('/api/playlist', playlistRouter);
 app.use('/api/image', imageRouter);
 
