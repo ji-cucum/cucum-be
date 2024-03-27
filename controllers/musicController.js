@@ -70,7 +70,6 @@ export const updateMusic = async (req, res) => {
 export const getMusicInfo = async (req, res) => {
   try {
     const { url } = req.params;
-    
 
     res.send(JSON.stringify(music, bigIntToString));
   } catch (err) {

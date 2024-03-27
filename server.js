@@ -4,7 +4,6 @@ import imageRouter from './routes/imageRouter.js';
 import cors from 'cors';
 import express from 'express';
 import cookieParser from "cookie-parser";
-import bcrypt from "bcrypt";
 import passport from "passport";
 import dotenv from "dotenv";
 import session from 'express-session';
@@ -12,7 +11,6 @@ import flash from 'express-flash';
 import initializePassport from './passportConfig.js'
 import authRouter from './routes/authRouter.js'
 import bodyParser from 'body-parser';
-import cors from 'cors'
 
 dotenv.config();
 import pool from "./db.js";
