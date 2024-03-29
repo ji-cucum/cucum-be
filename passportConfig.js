@@ -6,7 +6,7 @@
     const authenticateUser = (email, password, done)=>{
 
       pool.query(
-        `SELECT * FROM ji_project.users WHERE email = $1`,
+        `SELECT * FROM ji_project.user WHERE email = $1`,
         [email], 
         (err, results) => {
           if(err) {
@@ -48,7 +48,7 @@
 
     passport.deserializeUser((id, done)=>{
       pool.query(
-        `SELECT * FROM ji_project.users WHERE id = $1`, [id], (err,results)=>{
+        `SELECT * FROM ji_project.user WHERE id = $1`, [id], (err,results)=>{
           if (err){
             throw err;
           }
