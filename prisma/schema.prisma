@@ -20,14 +20,16 @@ model playlist {
 }
 
 model music {
-  id             BigInt           @id(map: "music_pk")
-  title          String?
-  artist         String?
-  thumbnail      String?
-  playtime       BigInt?
-  up_flg         String?          @db.Bit(1)
-  down_flg       String?          @db.Bit(1)
-  playlist_music playlist_music[]
+  id               BigInt           @id(map: "music_pk") @default(autoincrement())
+  title            String?
+  artist           String?
+  thumbnail        String?
+  playtime         BigInt?
+  up_flg           String?          @db.Bit(1)
+  down_flg         String?          @db.Bit(1)
+  third_party_key  String?
+  third_party_type String?          @default("youtube")
+  playlist_music   playlist_music[]
 }
 
 model Image {

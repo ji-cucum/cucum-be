@@ -14,7 +14,12 @@ export const getAllPlaylists = async (req, res) => {
         take: limit,
       } 
     const [ playlists, playlistCount ] = await Promise.all([
-      prisma.playlist.findMany(params),
+      prisma.playlist.findMany(params,
+        // {
+          // relationLoadStrategy: "join", // or "query"
+          // include: { playlist_music: true }
+        // }
+        ),
       prisma.playlist.count(),
     ]);
     res.send({ 
@@ -32,6 +37,10 @@ export const getPlaylist = async (req, res) => {
     const { id } = req.params;
     const playlist = await prisma.playlist.findUnique({
       where: { id: Number(id) },
+      include: { playlist_music: {
+        include: { music: true } 
+      }
+    }
     });
     res.send(JSON.stringify(playlist, bigIntToString));
   } catch (err) {
