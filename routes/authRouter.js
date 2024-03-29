@@ -43,7 +43,7 @@ router.post("/api/register-mail-adress", async (req, res) => {
     console.log(hashedPassword);
 
     pool.query(
-      `SELECT * FROM ji_project.users
+      `SELECT * FROM ji_project.user
       WHERE email = $1`,
       [email],
       (err, results) => {
@@ -57,7 +57,7 @@ router.post("/api/register-mail-adress", async (req, res) => {
           return res.status(500).json({ errors });
         } else {
           pool.query(
-            `INSERT INTO ji_project.users (name, email, password)
+            `INSERT INTO ji_project.user (name, email, password)
             VALUES ($1, $2, $3)
             RETURNING id, password`,
             [name, email, hashedPassword],
@@ -65,7 +65,7 @@ router.post("/api/register-mail-adress", async (req, res) => {
               if (err) {
                 throw err;
               }
-              console.log(results.rows);
+              console.log(results.name,results.email);
               res.status(200).send("User registered successfully");
             }
           );
@@ -85,7 +85,6 @@ router.post("/api/login-mailAdress", (req, res, next) => {
       // 失敗時のメッサージ.
       return res.status(501).json({ message: "ログイン情報に誤りがあります" });
     }
-    // const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET);
     // 로그인 성공 시 클라이언트에게 성공을 알리는 응답을 보냅니다.
     req.login(user, (err) => {
       if (err) {

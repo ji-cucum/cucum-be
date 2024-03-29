@@ -71,7 +71,7 @@ app.get("/data", async (req, res) => {
 app.get("/users", async (req, res) => {
   try {
     const client = await pool.connect();
-    const result = await client.query("SELECT * FROM ji_project.users");
+    const result = await client.query("SELECT * FROM ji_project.user");
     res.send(result.rows);
     client.release();
   } catch (err) {

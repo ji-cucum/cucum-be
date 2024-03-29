@@ -1,4 +1,4 @@
-generator client {
+generator Client {
   provider = "prisma-client-js"
 }
 
@@ -7,35 +7,72 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model playlist {
-  id          BigInt    @id(map: "playlist_pk") @default(autoincrement())
-  name        String
-  created_at  DateTime? @default(now()) @db.Timestamp(6)
-  creator     String    @default("cucum")
-  description String?
-  scope       String    @default("public")
-  thumbnail   String?
+model Playlist {
+  id            BigInt          @id(map: "playlist_pk") @default(autoincrement())
+  name          String
+  created_at    DateTime?       @default(now()) @db.Timestamp(6)
+  creator       String          @default("cucum")
+  description   String?
+  scope         String          @default("public")
+  thumbnail     String?
+  PlaylistMusic PlaylistMusic[]
+  UserPlaylist  UserPlaylist[]
+
+  @@map("playlist")
 }
 
-model music {
-  id    BigInt  @id(map: "music_pk")
-  title String?
+model Music {
+  id            BigInt          @id(map: "music_pk") @default(autoincrement())
+  title         String?
+  artist        String?
+  thumbnail     String?
+  playtime      BigInt?
+  up_flg        String?         @db.Bit(1)
+  down_flg      String?         @db.Bit(1)
+  PlaylistMusic PlaylistMusic[]
+
+  @@map("music")
 }
 
-model users {
-  id        BigInt    @id @default(autoincrement())
-  name      String    @db.VarChar(200)
-  email     String?   @unique @db.VarChar(200)
-  password  String?   @db.VarChar(200)
-  created   DateTime? @default(now()) @db.Timestamptz(6)
-  googlesub String?   @db.VarChar(300)
+model User {
+  id           BigInt         @id @default(autoincrement())
+  name         String         @db.VarChar(200)
+  email        String?        @unique @db.VarChar(200)
+  password     String?        @db.VarChar(200)
+  created      DateTime?      @default(now()) @db.Timestamptz(6)
+  googlesub    String?        @db.VarChar(300)
+  UserPlaylist UserPlaylist[]
+
+  @@map("user")
 }
 
-model image {
+model Image {
   id             BigInt    @id(map: "image_pk") @default(autoincrement())
   origin_name    String
   file_name      String    @unique(map: "image_file_name_uindex")
   file_extension String
   created_at     DateTime? @default(now()) @db.Timestamp(6)
   created_by     String?
+
+  @@map("image")
+}
+
+model UserPlaylist {
+  user_id     BigInt
+  playlist_id BigInt
+  playlist    Playlist @relation(fields: [playlist_id], references: [id])
+  user        User     @relation(fields: [user_id], references: [id])
+
+  @@id([user_id, playlist_id])
+  @@map("user_playlist")
+}
+
+model PlaylistMusic {
+  playlist_id BigInt
+  music_id    BigInt
+  music       Music    @relation(fields: [music_id], references: [id])
+  playlist    Playlist @relation(fields: [playlist_id], references: [id])
+
+  @@id([playlist_id, music_id])
+  @@map("playlist_music")
 }
