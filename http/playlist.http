@@ -1,5 +1,6 @@
 ###
-GET http://localhost:3011/api/playlist HTTP/1.1
+
+POST http://localhost:3011/api/playlist HTTP/1.1
 content-type: application/json
 
 {
@@ -8,3 +9,7 @@ content-type: application/json
   "offset": 2,
   "limit": 1
 }
+
+###
+GET http://localhost:3011/api/playlist/31 HTTP/1.1
+content-type: application/json
