@@ -1,43 +1,25 @@
 import { PrismaClient } from '@prisma/client';
 import { bigIntToString } from '../helpers/prismaHelper.js';
 const prisma = new PrismaClient();
-
+ 
 export const getAllPlaylists = async (req, res) => {
   try {
-    //クライアントから受けたユーザー情報
-    const userId = req.user.id;
-
-    console.log(userId)
-
-    if(!userId){
-      return res.status(401).json({nessage: "사용자 인증이 필요합니다." });
-    }
 
     const { sort, order, offset, limit } = req.body;
-
-      const playlists = await prisma.userPlaylist.findMany({
-        where: {
-          user_id: Number(userId),
-        },
-        include:{
-          playlist: true,
-        },
+    const params = {
         orderBy: {
           [sort]: order,
         },
         skip: offset,
-        take:limit,
-      });
-     
-      const playlistCount = await prisma.playlist.count({
-        where: {
-          user_id: userId,
-        },
-      });
-
+        take: limit,
+      } 
+    const [ playlists, playlistCount ] = await Promise.all([
+      prisma.playlist.findMany(params),
+      prisma.playlist.count(),
+    ]);
     res.send({ 
       items: JSON.parse(JSON.stringify(playlists, bigIntToString)), 
-      meta: { total: playlistCount },
+      meta: { total: playlistCount }
     });
   } catch (err) {
     console.error(err);
@@ -59,10 +41,6 @@ export const getPlaylist = async (req, res) => {
 };
 
 export const createPlaylist = async (req, res) => {
-  const userId = req.user.id;
-
-  console.log(userId)
-
   try {
     const newPlaylist = await prisma.playlist.create({
       data: req.body,
@@ -101,4 +79,3 @@ export const deletePlaylist = async (req, res) => {
     res.send("Error " + err);
   }
 };
-
