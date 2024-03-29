@@ -43,7 +43,7 @@ router.post("/api/register-mailAdress", async (req, res) => {
     console.log(hashedPassword);
 
     pool.query(
-      `SELECT * FROM ji_project.users
+      `SELECT * FROM ji_project.user
       WHERE email = $1`,
       [email],
       (err, results) => {
@@ -57,7 +57,7 @@ router.post("/api/register-mailAdress", async (req, res) => {
           return res.status(500).json({ errors });
         } else {
           pool.query(
-            `INSERT INTO ji_project.users (name, email, password)
+            `INSERT INTO ji_project.user (name, email, password)
             VALUES ($1, $2, $3)
             RETURNING id, password`,
             [name, email, hashedPassword],
