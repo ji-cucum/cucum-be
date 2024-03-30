@@ -90,7 +90,7 @@ router.post("/api/login-mailAdress", (req, res, next) => {
       if (err) {
         return next(err);
       }
-      return res.status(200).json({ message: "로그인 성공" });
+      return res.status(200).json({ message: "로그인 성공", userId: user.id });
     });
   })(req, res, next);
 });

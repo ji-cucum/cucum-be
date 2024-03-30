@@ -1,4 +1,7 @@
 import playlistRouter from './routes/playlistRouter.js';
+import playlistMusicRouter from './routes/playlistMusicRouter.js';
+import UserPlaylistRouter from './routes/userPlaylistRouter.js';
+import userRouter from './routes/userRouter.js';
 import musicRouter from './routes/musicRouter.js';
 import imageRouter from './routes/imageRouter.js';
 import cors from 'cors';
@@ -48,6 +51,11 @@ app.use(authRouter);
 
 app.use('/api/music', musicRouter);
 app.use('/api/playlist', playlistRouter);
+app.use('/api/playlist-music', playlistMusicRouter);
+
+app.use('/api/user', userRouter);
+app.use('/api/user-playlist', UserPlaylistRouter);
+
 app.use('/api/image', imageRouter);
 
 app.get("/api/register-mailAdress", (req, res) => {

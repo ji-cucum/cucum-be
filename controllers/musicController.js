@@ -1,6 +1,39 @@
 import { PrismaClient } from '@prisma/client';
 import { bigIntToString } from '../helpers/prismaHelper.js';
+import { searchMusics, searchArtists, getArtist, } from 'node-youtube-music';
 const prisma = new PrismaClient();
+
+export const searchMusic = async (req, res) => {
+  try {
+    console.log(req.params.id)
+    const musics = await searchMusics(req.params.id);
+    res.send({ musics });
+  } catch (err) {
+    console.error(err);
+    res.send("Error " + err);
+  }
+}
+
+export const searchArtist = async (req, res) => {
+  try {
+    const artists = await searchArtists(req.params.id);
+    res.send({ artists });
+  } catch (err) {
+    console.error(err);
+    res.send("Error " + err);
+  }
+}
+
+export const getArtistInfo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const artist = await getArtist(id);
+    res.send({ artist });
+  } catch (err) {
+    console.error(err);
+    res.send("Error " + err);
+  }
+}
  
 export const getAllMusics = async (req, res) => {
   try {
@@ -42,10 +75,19 @@ export const getMusic = async (req, res) => {
 
 export const createMusic = async (req, res) => {
   try {
-    const newMusic = await prisma.music.create({
-      data: req.body,
-    });
-    res.send(JSON.stringify(newMusic, bigIntToString));
+    const music = await prisma.music.findFirst({
+      where: { third_party_key: req.body.third_party_key },
+    })
+    console.log("music : ", music)
+    if (music) {
+      res.send(JSON.stringify(music, bigIntToString));
+    } else {
+      const newMusic = await prisma.music.create({
+        data: req.body,
+      });
+      console.log(newMusic)
+      res.send(JSON.stringify(newMusic, bigIntToString));
+    }
   } catch (err) {
     console.error(err);
     res.send("Error " + err);

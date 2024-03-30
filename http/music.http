@@ -1,2 +1,6 @@
 ###
-GET http://localhost:3011/api/playlist HTTP/1.1
+
+GET http://localhost:3011/api/music/search/musics/밤양갱 HTTP/1.1
+
+###
+GET http://localhost:3011/api/music/search/artists/sum41 HTTP/1.1
