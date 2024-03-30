@@ -16,7 +16,6 @@ import authRouter from './routes/authRouter.js'
 import bodyParser from 'body-parser';
 
 dotenv.config();
-import pool from "./db.js";
 import "./auth.js"
 
 const app = express()

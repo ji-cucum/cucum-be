@@ -24,7 +24,7 @@ router.get("/public-api/is-logged-in", function (req, res) {
   });
 });
 
-router.post("/api/register-mailAdress", async (req, res) => {
+router.post("/api/register-mail-adress", async (req, res) => {
   let { name, email, password, password_confirm } = req.body;
   console.log({
     name,
@@ -65,7 +65,7 @@ router.post("/api/register-mailAdress", async (req, res) => {
               if (err) {
                 throw err;
               }
-              console.log(results.rows);
+              console.log(results.name,results.email);
               res.status(200).send("User registered successfully");
             }
           );
@@ -85,7 +85,6 @@ router.post("/api/login-mailAdress", (req, res, next) => {
       // 失敗時のメッサージ.
       return res.status(501).json({ message: "ログイン情報に誤りがあります" });
     }
-    // const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET);
     // 로그인 성공 시 클라이언트에게 성공을 알리는 응답을 보냅니다.
     req.login(user, (err) => {
       if (err) {
