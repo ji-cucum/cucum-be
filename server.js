@@ -54,6 +54,13 @@ app.get("/api/register-mailAdress", (req, res) => {
   res.send(401);
 });
 
+app.post('/api/generate-qr', async (req, res) => {
+  const url = "http://localhost:5173";
+
+  res.json({ url })
+});
+
+
 app.get("/data", async (req, res) => {
   try {
     const client = await pool.connect();
