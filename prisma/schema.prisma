@@ -32,7 +32,7 @@ model music {
   playlist_music   playlist_music[]
 }
 
-model Image {
+model image {
   id             BigInt    @id(map: "image_pk") @default(autoincrement())
   origin_name    String
   file_name      String    @unique(map: "image_file_name_uindex")
